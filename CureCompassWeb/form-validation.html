@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Validation Form</title>
+
+	<link rel="stylesheet" href="demo.css">
+	<link rel="stylesheet" href="form-validation.css">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+</head>
+<body>
+
+	
+	<div class="main-content">
+
+        <!-- You only need this form and the form-validation.css -->
+
+        <form class="form-validation" method="post" action="Results.html">
+
+            <div class="form-title-row">
+                <h1>Cure Compass</h1>
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+                <label>
+                    <span>Full name</span>
+                    <input type="text" name="name">
+                </label>
+
+                <!--
+                    Add these three elements to every form row. They will be shown by the
+                    .form-valid-data and .form-invalid-data classes (see the JS for an example).
+                -->
+
+                <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+                <!-- <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                <span class="form-invalid-data-info"></span> -->
+
+            </div>
+
+            <div class="form-row form-input-email-row">
+
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" value="email@example.com">
+                </label>
+                
+                <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+                <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                <span class="form-invalid-data-info"></span>
+	
+            </div>
+            
+            
+            
+            <!-- <div class="form-row form-input-disorder-row">
+                              
+                <label>
+                    <span>Symptom/Disorder</span>
+                    <input type="text" name="text" value="">
+                </label>
+
+                <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+                <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+                <span class="form-invalid-data-info"></span>
+
+            </div> -->
+
+            <div class="form-row">
+
+                <label>
+                    <span>Disorder/Symptom</span>
+                    <select name="dropdown">
+                        <option>039 - EXTRACRANIAL PROCEDURES W/O CC/MCC</option>
+                        <option>066 - INTRACRANIAL HEMORRHAGE OR CEREBRAL INFARCTION W/O CC/MCC</option>
+                        <option>074 - CRANIAL & PERIPHERAL NERVE DISORDERS W/O MCC</option>
+                        <option>069 - TRANSIENT ISCHEMIA</option>
+                        <option>101 - SEIZURES W/O MCC</option>
+                        <option>149 - DYSEQUILIBRIUM</option>
+                        <option>176 - PULMONARY EMBOLISM W/O MCC</option>
+                        <option>177 - RESPIRATORY INFECTIONS & INFLAMMATIONS W MCC</option>
+                        <option>189 - PULMONARY EDEMA & RESPIRATORY FAILURE</option>
+                        <option>280 - ACUTE MYOCARDIAL INFARCTION</option>
+                        <option>303 - ATHEROSCLEROSIS W/O MCC</option>
+                    </select>
+                </label>
+
+            </div>
+            
+            <div class="form-row">
+            	 <label class="form-checkbox">
+            		<span>Show results by:
+            		</span>
+            		<input type="checkbox" name="filter" value="rating" checked>Post-surgical complication probability<br>
+					<center><input type="checkbox" name="filter" value="cost">Cost of procedure<br>
+            	</label>
+            
+            
+            </div>
+
+          <!--   <div class="form-row">
+
+                <label class="form-checkbox">
+                    <span>Checkbox</span>
+                    <input type="checkbox" name="checkbox" checked>
+                </label>
+
+            </div> -->
+
+            <div class="form-row">
+
+                <button type="submit">Search hospitals</button>
+
+            </div>
+            
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+
+        </form>
+
+    </div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+
+        // Here is how to show an error message next to a form field
+
+        var errorField = $('.form-input-name-row');
+
+        // Adding the form-invalid-data class will show
+        // the error message and the red x for that field
+
+        errorField.addClass('form-invalid-data');
+        errorField.find('.form-invalid-data-info').text('Please enter your name');
+
+
+        // Here is how to mark a field with a green check mark
+
+        var successField = $('.form-input-email-row');
+
+        successField.addClass('form-valid-data');
+    });
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SO question 4112686</title>
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script>
+
+        function getHospitals(){
+
+            $.ajax({
+                    type: "GET",
+                    dataType: 'jsonp',
+                    url: "http://localhost:8080/CureCompassWeb/HospitalSearch",
+                    success: function(response){
+                        alert('jhgjgjhgj');     
+                        console.log("kjhkjhkjh");
+                        document.getElementById('somediv').innerHTML = response['name'];
+
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }
+                })
+
+            .done(function( data ) {
+                console.log("done");
+                
+            })
+          
+            
+        }
+
+        </script>
+    </head>
+    <body>
+        <button id="somebutton" onclick="getHospitals();">press here</button>
+        <div id="somediv"></div>
+    </body>
+</html>

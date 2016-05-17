@@ -1,0 +1,268 @@
+<html>
+<head>
+<title>
+	Eventbrite - Visualizations
+</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+
+</head>
+<body>
+
+
+<select id="venue.city" >
+	<option>All</option>
+	<option>Phoenix</option>
+	<option>Dallas</option>
+	<option>Boston</option>
+	<option>Denver</option>
+</select>
+
+<select id="start_date.keyword" >
+	<option>All</option>
+	<option>today</option>
+	<option>tomorrow</option>
+	<option>this_week</option>
+	<option>this_weekend</option>
+	<option>next_week</option>
+	<option>this_month</option>
+</select>
+
+<input type="button" onclick="getAllEvents()" value="Get All events"></input>
+<p id="eventCount"></p>	
+
+<div>
+	<div id="chart1" style="width:50%; display: inline-block"></div><div id="chart2" style="width:50%; display: inline-block;"></div>
+	<div id="chart3" width="50%"></div>
+	</br></br>
+	<p>Heat map of Events</p>
+	<div id="cal-heatmap"></div>
+</div>
+
+<script type="text/javascript">
+
+function getAllEvents(){
+
+	var api_request = "https://www.eventbriteapi.com/v3/events/search/?popular=true&token=ZH5SDZXHG4BR6EDDUSFI";
+	var venue = document.getElementById('venue.city');
+	var start_date = document.getElementById('start_date.keyword');
+
+	var location = venue.options[venue.selectedIndex].innerHTML;
+	if(location!='All')
+		api_request = api_request + "&venue.city="+location;
+
+	var start_date = start_date.options[start_date.selectedIndex].innerHTML;
+	if(start_date!='All')
+		api_request = api_request + "&start_date.keyword="+start_date;
+
+	console.log(api_request);
+
+	$.get(api_request, function(data, status){
+        console.log("Data: " + data + "\nStatus: " + status);
+
+        var number_of_events = data['events'].length;
+        document.getElementById('eventCount').innerHTML = 'The number of events in the selected location are: '+data['events'].length;
+
+        var allCategories = new Array(number_of_events);
+        
+        var jsonData = {};
+        
+        for (var i = 0; i < number_of_events; i++) {
+       	 	
+        	if(data['events'][i]['category_id']==null){
+        		allCategories[i] = 'Undefined Category';
+
+        	}else{
+        		//`(data['events'][i]['category_id']);
+        		allCategories[i] = data['events'][i]['category_id'];
+        	}
+        };
+      
+
+        allCategories.sort();
+
+        var categoryNames = [];
+        var categoryCount = [];
+
+        categoryCount.push(start_date);
+        categoryNames.push('x');
+
+	    var current = null;
+	    var cnt = 0;
+	    for (var i = 0; i < allCategories.length; i++) {
+	        if (allCategories[i] != current) {
+	            if (cnt > 0) {
+	                //document.write(current + ' comes --> ' + cnt + ' times<br>');
+	                categoryNames.push(current);
+	        		categoryCount.push(cnt);
+	            }
+	            current = allCategories[i];
+	            cnt = 1;
+	        } else {
+	            cnt++;
+	        }
+	    }
+	    if (cnt > 0) {
+	        //document.write(current + ' comes --> ' + cnt + ' times');
+	        categoryNames.push(current);
+	        categoryCount.push(cnt);
+	    }	    
+
+        
+        var chart = c3.generate({
+        		bindto: '#chart1',
+        	    data: {
+        	    	x : 'x',
+        	    	rows: [
+					categoryNames,
+					categoryCount
+        	       ],
+        	        type: 'pie'
+        	    },
+        	    grid: {
+        	        y: {
+        	            lines: [{value:0}]
+        	        }
+        	    },
+        	    axis: {
+        	        x: {
+        	        	 type: 'categorized'
+           
+        	        }
+           
+        	    }
+	       	});
+
+        var chart2 = c3.generate({
+        		bindto: '#chart2',
+        	    data: {
+        	    	x : 'x',
+        	    	columns: [
+					categoryNames,
+					categoryCount
+        	       ],
+        	        type: 'bar'
+        	    },
+        	    grid: {
+        	        y: {
+        	            lines: [{value:0}],
+        	            show: true
+        	        },
+        	        x: {
+        	        	show: true
+        	        }
+        	    },
+        	    axis: {
+        	        x: {
+        	        	 type: 'categorized'
+           
+        	        }
+           
+        	    },
+        	    zoom:{
+        	    	enabled: true
+        	    }
+	       	});
+
+        setTimeout(function () {
+    		chart.transform('donut');
+		}, 3000);
+
+
+
+		//Heatmap 
+		var allDates = [];
+		var UTCDates = [];
+
+		 for (var i = 0; i < number_of_events; i++) {
+
+		 	var eventDate = data['events'][i]['start']['utc'];
+		 	UTCDates.push(eventDate.substring(0,10));
+
+
+		 	//eventDate = eventDate.substring(0,10);
+		 	allDates.push(Date.parse(eventDate)/1000);
+
+
+
+
+		 };
+
+		 console.log(UTCDates);
+		 console.log(allDates);
+
+		var datesOfEvents = [];
+		var countOfEvent = [];
+
+		var currentDate = null;
+	    var cntDate = 0;
+	    for (var i = 0; i < allDates.length; i++) {
+	        if (allDates[i] != currentDate) {
+	            if (cntDate > 0) {
+	                //document.write(current + ' comes --> ' + cnt + ' times<br>');
+	                datesOfEvents.push(currentDate);
+	        		countOfEvent.push(cntDate);
+	            }
+	            currentDate = allDates[i];
+	            cntDate = 1;
+	        } else {
+	            cntDate++;
+	        }
+	    }
+	    if (cntDate > 0) {
+	        //document.write(current + ' comes --> ' + cnt + ' times');
+	        datesOfEvents.push(currentDate);
+	        countOfEvent.push(cntDate);
+	    }	
+
+	    console.log(datesOfEvents);
+
+
+	    var eventDateData = {};
+	    for (var i = 0; i < datesOfEvents.length; i++) {
+	    	var dates = datesOfEvents[i];
+	    	//alert(dates +": "+ countOfEvent[i]);
+	    	eventDateData[dates] = countOfEvent[i];
+	    };   
+
+	    var heatMapJSON = JSON.stringify(eventDateData);
+	   	heatMapJSON = heatMapJSON.substring(1, heatMapJSON.length-1);
+	   	console.log(heatMapJSON);
+
+	   	document.getElementById('cal-heatmap').innerHTML = '';
+
+	    var cal = new CalHeatMap();
+		cal.init({
+			legend: [1, 2, 3, 4],
+			data: eventDateData,
+			dataType: "json",
+			start: new Date(2015, 2),
+			id : "graph_k",
+			domain : "month",
+			subDomain : "x_day",
+			itemName: ["event", "events"]
+			
+			
+		});
+
+
+
+
+
+		
+
+	}, "json");
+
+}
+
+
+	
+</script>
+</body>
+</html>

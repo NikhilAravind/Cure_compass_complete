@@ -10,8 +10,7 @@ CureCompass is a Semantic Web based web application that is intended to provide 
 
 It is built on very unique sets of data that is available in the RDF domain. Hospital ownership information, average/median cost information and primary provider info is taken into consideration on order to provide a best possible match to the users intending to use the application.
 
-*EDIT*
-I have included the raw CureCompass Java project in the latest version. Previously it was a .jar in the /lib of the CureCompassWeb project.
+The RDFDataAccess class is a part of the CureCompass.jar in the /lib directory
 
 Deployment procedure:
 1. Download and unzip Apache Tomcat 8 onto your local machine
